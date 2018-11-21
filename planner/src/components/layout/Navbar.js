@@ -2,17 +2,31 @@ import React from 'react'
 import {Link} from 'react-router-dom'
 import SignedInLinks from './SignedInLinks'
 import SignedOutLinks from './SignedOutLinks'
+import { connect } from 'react-redux'
 
-const Navbar = () => {
+// Here we are destructuring the auth and profile to props.
+// passing our profile property to the signedinlinks components
+// we could have mapped the state to props on the Signedin Components
+const Navbar = (props) => {
+    const { auth, profile } = props;
+    // console.log(auth)
+    const links = auth.uid ? <SignedInLinks profile={profile}/> : <SignedOutLinks />
     return (
         <nav className="nav-wrapper grey darken-3">
             <div className="container">
               <Link to= '/' className="brand-logo">Planner</Link>
-              <SignedInLinks />
-              <SignedOutLinks />
+              { links }
             </div>
         </nav>
     )
 }
 
-export default Navbar
+const mapStateToProps = (state) => {
+    console.log(state);
+    return{
+      auth: state.firebase.auth,
+      profile: state.firebase.profile
+    }
+}
+
+export default connect(mapStateToProps)(Navbar)
